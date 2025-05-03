@@ -67,3 +67,4 @@ This project is licensed under the [MIT License](https://github.com/OctoBanon-Ma
 - [bRAC](https://github.com/MeexReay/bRAC) - GTK4 Rust client for RAC.
 - [CRAB](https://gitea.bedohswe.eu.org/pixtaded/crab) - Client and server for RAC on Java.
 - [AlmatyD](https://gitea.bedohswe.eu.org/bedohswe/almatyd) - Unofficial server implementation for RAC.
+- Lobster - QT6 C++ client for RAC.
