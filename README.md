@@ -50,7 +50,7 @@ Optionally, you can specify TLS certificate and key files using the --cert and -
 ./target/release/gashishnik 127.0.0.1 6667 --cert path/to/cert.pem --key path/to/key.pem
 ```
 
-The compiled executable will be available in the /target/release/ directory.
+The compiled executable will be available in the `/target/release/` directory.
 Alternatively, you can download the precompiled binary from the [Releases](https://github.com/OctoBanon-Main/gashishnik/releases) page.
 
 ## License
