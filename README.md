@@ -41,7 +41,7 @@ The compiled executable will be available in the `/target/release/` directory.
 And run with this command:
 
 ```bash
-./target/release/gashishnik --bind-ip 127.0.0.1 --bind-port 42666
+./target/release/gashishnik-server --bind-ip 127.0.0.1 --bind-port 42666
 ```
 
 The compiled executable will be available in the `/target/release/` directory.
