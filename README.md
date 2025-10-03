@@ -55,4 +55,5 @@ This project is licensed under the [MIT License](https://github.com/OctoBanon-Ma
 ## See also
 
 - [Mefedroniy](https://github.com/OctoBanon-Main/mefedroniy-client) — TUI Rust client for RAC.
+- [bRAC](https://github.com/MeexReay/bRAC) — GTK4/Adwaita client on Rust.
 - [sRAC](https://github.com/MeexReay/sRAC) — Simple RAC server on Rust.
