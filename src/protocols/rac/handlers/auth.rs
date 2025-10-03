@@ -1,11 +1,11 @@
 use anyhow::Result;
-use tokio::net::TcpStream;
+use crate::io_stream::AsyncStream;
 use crate::storage::Storage;
 use tracing::{info, warn};
 use crate::protocols::common;
 
 pub async fn handle_auth_message(
-    socket: &mut TcpStream,
+    socket: &mut (dyn AsyncStream),
     storage: &impl Storage,
     data: &[u8],
     client_ip: &str,
@@ -35,13 +35,13 @@ pub async fn handle_auth_message(
     info!("User {} authenticated successfully, saving message", username);
     storage.save_message(Some(username), Some(client_ip), message).await?;
     common::write_response(socket, &[0x00]).await?;
-    
+
     Ok(())
 }
 
 pub async fn handle_registration(
-    socket: &mut TcpStream, 
-    storage: &impl Storage, 
+    socket: &mut (dyn AsyncStream),
+    storage: &impl Storage,
     data: &[u8]
 ) -> Result<()> {
     let msg_str = String::from_utf8_lossy(data);
@@ -63,6 +63,6 @@ pub async fn handle_registration(
     storage.create_user(username, password).await?;
     info!("User {} registered successfully", username);
     common::write_response(socket, &[0x00]).await?;
-    
+
     Ok(())
 }

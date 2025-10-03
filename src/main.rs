@@ -14,8 +14,6 @@ async fn shutdown_signal() {
     tokio::signal::ctrl_c()
         .await
         .expect("Failed to install Ctrl+C handler");
-
-    info!("Shutdown signal received, stopping server...");
 }
 
 #[tokio::main]
@@ -52,9 +50,22 @@ async fn main() -> Result<()> {
         shutdown_token_child.cancel();
     });
 
+    let tls_acceptor = match (&args.tls_cert, &args.tls_key) {
+        (Some(cert), Some(key)) => {
+            info!("Attempting to load TLS cert={} key={}", cert, key);
+            match gashishnik_server::tls::load_tls_acceptor(cert, key) {
+                Ok(acc) => Some(acc),
+                Err(e) => {
+                    panic!("Failed to load TLS files: {:?}", e);
+                }
+            }
+        }
+        _ => None,
+    };
+
     info!("Server starting on {}", bind_addr);
 
-    run_server(&bind_addr, storage, args.auth_only, shutdown_token.clone()).await?;
+    run_server(&bind_addr, storage, args.auth_only, tls_acceptor, shutdown_token.clone()).await?;
 
     Ok(())
 }

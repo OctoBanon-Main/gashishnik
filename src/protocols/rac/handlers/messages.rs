@@ -1,9 +1,9 @@
 use anyhow::Result;
-use tokio::net::TcpStream;
+use crate::io_stream::AsyncStream;
 use crate::storage::Storage;
 use crate::protocols::common;
 
-pub async fn handle_get_messages(socket: &mut TcpStream, storage: &impl Storage) -> Result<()> {
+pub async fn handle_get_messages(socket: &mut (dyn AsyncStream), storage: &impl Storage) -> Result<()> {
     let messages = storage.get_messages().await?;
 
     let text = messages.iter()

@@ -10,5 +10,11 @@ pub struct CliArgs {
     pub bind_port: u16,
 
     #[arg(long)]
-    pub auth_only: bool
+    pub auth_only: bool,
+
+    #[arg(long)]
+    pub tls_cert: Option<String>,
+
+    #[arg(long)]
+    pub tls_key: Option<String>,
 }

@@ -5,7 +5,7 @@ authors = ["Maksim Bengraf (OctoBanon) <me@octobanon.com>"]
 readme = "README.md"
 repository = "https://github.com/OctoBanon-Main/gashishnik-server"
 license = "MIT"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 
 [package.metadata]
@@ -24,3 +24,6 @@ bcrypt = "0.17.1"
 sqlx = { version = "0.8.6", features = ["runtime-tokio-native-tls", "sqlite"] }
 chrono = "0.4.42"
 clap = { version = "4.5.48", features = ["derive"] }
+
+tokio-rustls = "0.23"
+rustls-pemfile = "1.0"
