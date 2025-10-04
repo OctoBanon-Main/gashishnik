@@ -47,13 +47,13 @@ The compiled executable will be available in the `/target/release/` directory.
 And run with this command:
 
 ```bash
-./target/release/gashishnik-server --bind-ip 0.0.0.0 --bind-port 42666
+./target/release/gashishnik-server --bind-ip 0.0.0.0
 ```
 
 Or with TLS:
 
 ```bash
-./target/release/gashishnik-server --bind-ip 0.0.0.0 --bind-port 42667 --tls-cert server.crt --tls-key server.key
+./target/release/gashishnik-server --bind-ip 0.0.0.0 --tls-cert server.crt --tls-key server.key
 ```
 
 The compiled executable will be available in the `/target/release/` directory.

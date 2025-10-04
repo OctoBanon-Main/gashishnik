@@ -24,7 +24,7 @@ async fn main() -> Result<()> {
         .init();
 
     let args = gashishnik_server::cli::CliArgs::parse();
-    let bind_addr = format!("{}:{}", args.bind_ip, args.bind_port);
+    let bind_addr = args.bind_addr();
 
     let db_path = "gashishnik.db";
 
@@ -50,22 +50,35 @@ async fn main() -> Result<()> {
         shutdown_token_child.cancel();
     });
 
-    let tls_acceptor = match (&args.tls_cert, &args.tls_key) {
-        (Some(cert), Some(key)) => {
-            info!("Attempting to load TLS cert={} key={}", cert, key);
-            match gashishnik_server::tls::load_tls_acceptor(cert, key) {
-                Ok(acc) => Some(acc),
-                Err(e) => {
-                    panic!("Failed to load TLS files: {:?}", e);
-                }
-            }
-        }
-        _ => None,
-    };
+    let tls_acceptor = args
+        .tls_cert
+        .as_ref()
+        .zip(args.tls_key.as_ref())
+        .map(|(cert, key)| {
+            info!("Enabling TLS with certificate '{}' and key '{}'", cert, key);
+            gashishnik_server::tls::load_tls_acceptor(cert, key)
+        })
+        .transpose()?;
 
-    info!("Server starting on {}", bind_addr);
 
-    run_server(&bind_addr, storage, args.auth_only, tls_acceptor, shutdown_token.clone()).await?;
+    info!(
+        "Starting server on {} (TLS: {})",
+        bind_addr,
+        args.tls_enabled().then(|| "enabled").unwrap_or("disabled")
+    );
 
+    info!(
+        "Server started {}",
+        args.auth_only.then(|| "in auth-only mode").unwrap_or("in normal mode")
+    );
+
+    run_server(
+        &bind_addr,
+        storage,
+        args.auth_only,
+        tls_acceptor,
+        shutdown_token.clone(),
+    )
+    .await?;
     Ok(())
 }

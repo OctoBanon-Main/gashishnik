@@ -23,7 +23,6 @@ pub async fn run_server(
 ) -> Result<()> {
     let storage = Arc::new(storage);
     let listener = TcpListener::bind(bind_addr).await?;
-    info!("Server bound to {}, auth_only={}", bind_addr, auth_only);
 
     loop {
         tokio::select! {
