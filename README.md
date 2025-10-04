@@ -58,8 +58,6 @@ Or with TLS:
 
 The compiled executable will be available in the `/target/release/` directory.
 
-Alternatively, you can download the precompiled binary from the [Releases](https://github.com/OctoBanon-Main/gashishnik/releases) page.
-
 ## License
 
 This project is licensed under the [MIT License](https://github.com/OctoBanon-Main/gashishnik/blob/main/LICENSE).
