@@ -8,8 +8,9 @@ Gashishnik is a server implementation of the Real Address Chat (RAC) protocol, d
 
 ## Features
 - TLS encryption support
+- Password hashing (via bcrypt)
 - SQLite storage
-- Authenticated-only mode
+- Authentication-only mode
 
 ## Prerequisites
 
