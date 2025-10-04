@@ -1,6 +1,7 @@
 use anyhow::Result;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use crate::io_stream::AsyncStream;
+
+use crate::server::io_stream::AsyncStream;
 
 pub const BUFFER_SIZE: usize = 1024;
 pub const TIMEOUT_SECS: u64 = 10;

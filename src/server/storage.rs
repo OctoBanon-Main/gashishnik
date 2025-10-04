@@ -1,9 +1,10 @@
 use async_trait::async_trait;
 use anyhow::Result;
-use crate::db::Message;
 use sqlx::SqlitePool;
 use chrono::Local;
 use sqlx::Row;
+
+use super::db::Message;
 
 #[async_trait]
 pub trait Storage: Send + Sync + 'static {

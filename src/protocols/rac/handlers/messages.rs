@@ -1,6 +1,6 @@
 use anyhow::Result;
-use crate::io_stream::AsyncStream;
-use crate::storage::Storage;
+use crate::server::io_stream::AsyncStream;
+use crate::server::storage::Storage;
 use crate::protocols::common;
 
 pub async fn handle_get_messages(socket: &mut (dyn AsyncStream), storage: &impl Storage) -> Result<()> {

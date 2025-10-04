@@ -5,8 +5,8 @@ use std::path::Path;
 use tracing_subscriber;
 use tracing::info;
 
-use gashishnik_server::db::init_database;
-use gashishnik_server::storage::SqliteStorage;
+use gashishnik_server::server::db::init_database;
+use gashishnik_server::server::storage::SqliteStorage;
 use gashishnik_server::protocols::rac::run_server;
 use sqlx::sqlite::SqlitePoolOptions;
 
@@ -56,7 +56,7 @@ async fn main() -> Result<()> {
         .zip(args.tls_key.as_ref())
         .map(|(cert, key)| {
             info!("Enabling TLS with certificate '{}' and key '{}'", cert, key);
-            gashishnik_server::tls::load_tls_acceptor(cert, key)
+            gashishnik_server::server::tls::load_tls_acceptor(cert, key)
         })
         .transpose()?;
 
