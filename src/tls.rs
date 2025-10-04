@@ -1,40 +1,24 @@
 use anyhow::Result;
-use std::fs::File;
-use std::io::BufReader;
-use std::sync::Arc;
+use std::{fs, sync::Arc};
 use tokio_rustls::TlsAcceptor;
-use tokio_rustls::rustls::{Certificate, PrivateKey, ServerConfig};
-use rustls_pemfile::{certs, pkcs8_private_keys, rsa_private_keys};
+use tokio_rustls::rustls::{
+    pki_types::{CertificateDer, PrivateKeyDer},
+    ServerConfig,
+};
+
+use tokio_rustls::rustls::pki_types::pem::PemObject;
 
 pub fn load_tls_acceptor(cert_path: &str, key_path: &str) -> Result<Arc<TlsAcceptor>> {
-    let certfile = File::open(cert_path)?;
-    let mut reader = BufReader::new(certfile);
-    let cert_chain = certs(&mut reader)?
-        .into_iter()
-        .map(Certificate)
-        .collect::<Vec<_>>();
+    let cert_pem = fs::read(cert_path)?;
+    let key_pem = fs::read(key_path)?;
 
-    let keyfile = File::open(key_path)?;
-    let mut reader = BufReader::new(keyfile);
-
-    let mut keys = pkcs8_private_keys(&mut reader)?;
-
-    if keys.is_empty() {
-        let keyfile = File::open(key_path)?;
-        let mut reader = BufReader::new(keyfile);
-        keys = rsa_private_keys(&mut reader)?;
-    }
-
-    if keys.is_empty() {
-        anyhow::bail!("no private keys found in {}", key_path);
-    }
-
-    let privkey = PrivateKey(keys.remove(0));
+    let certs = CertificateDer::pem_slice_iter(&cert_pem)
+        .collect::<Result<Vec<_>, _>>()?;
+    let key = PrivateKeyDer::from_pem_slice(&key_pem)?;
 
     let config = ServerConfig::builder()
-        .with_safe_defaults()
         .with_no_client_auth()
-        .with_single_cert(cert_chain, privkey)?;
+        .with_single_cert(certs, key)?;
 
     Ok(Arc::new(TlsAcceptor::from(Arc::new(config))))
 }
