@@ -13,6 +13,9 @@ pub struct CliArgs {
     pub auth_only: bool,
 
     #[arg(long)]
+    pub database_name: Option<String>,
+
+    #[arg(long)]
     pub tls_cert: Option<String>,
 
     #[arg(long)]
@@ -28,8 +31,14 @@ impl CliArgs {
         self.tls_enabled().then(|| 42667).unwrap_or(42666)
     }
 
+    pub fn db_filename(&self) -> String {
+        self.database_name
+            .as_ref()
+            .map(|name| format!("{name}.db"))
+            .unwrap_or_else(|| "gashishnik.db".to_string())
+    }
+
     pub fn bind_addr(&self) -> String {
-        let port = self.bind_port.unwrap_or_else(|| self.default_port());
-        format!("{}:{}", self.bind_ip, port)
+        format!("{}:{}", self.bind_ip, self.bind_port.unwrap_or_else(|| self.default_port()))
     }
 }

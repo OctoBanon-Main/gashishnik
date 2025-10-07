@@ -24,7 +24,7 @@ async fn main() -> Result<()> {
     setup_tracing();
     let args = cli::CliArgs::parse();
 
-    let storage: SqliteStorage = setup_database("gashishnik.db").await?;
+    let storage: SqliteStorage = setup_database(&args.db_filename()).await?;
     let tls_acceptor = setup_tls(&args)?;
 
     let shutdown = CancellationToken::new();
