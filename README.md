@@ -6,17 +6,19 @@
 
 Gashishnik is a server implementation of the Real Address Chat (RAC) protocol, developed by Mr. Sugoma and promoted as the "IRC Killer," designed to manage text-based communication between clients.
 
+
 ## Features
-- TLS encryption support
-- Password hashing (via bcrypt)
-- SQLite storage
+- TLS support (encrypts client-server communication; requires client TLS support)
+- Password hashing via bcrypt
+- SQLite storage with configurable database file
 - Authentication-only mode
 
 ## Prerequisites
 
-Before building the project, ensure you have the following installed:
+To build this project, you’ll need to have the following installed on your system:
 
-[Rust](https://www.rust-lang.org/tools/install) (latest stable version)
+- Git
+- [Rust](https://www.rust-lang.org/tools/install) (latest stable release)
 
 ## Steps to Build
 
