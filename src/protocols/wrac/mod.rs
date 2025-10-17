@@ -1,5 +1,4 @@
 pub mod server;
 pub mod handlers;
-mod common;
 
 pub use server::run_server;

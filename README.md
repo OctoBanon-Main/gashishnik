@@ -6,19 +6,26 @@
 
 Gashishnik is a server implementation of the Real Address Chat (RAC) protocol, developed by Mr. Sugoma and promoted as the "IRC Killer," designed to manage text-based communication between clients.
 
-
 ## Features
 - TLS support (encrypts client-server communication; requires client TLS support)
+- Server-side message sanitization (removes ANSI control characters and other unwanted input from clients)
 - Password hashing via bcrypt
 - SQLite storage with configurable database file
 - Authentication-only mode
+- RAC and WRACv2.0 protocol support
+
+## Default ports
+
+| Mode  | Insecure (no TLS) | TLS Enabled |
+|-------|-----------------|-------------|
+| RAC   | 42666           | 42667       |
+| WRAC  | 52666           | 52667       |
 
 ## Prerequisites
 
-To build this project, you’ll need to have the following installed on your system:
+Before building the project, ensure you have the following installed:
 
-- Git
-- [Rust](https://www.rust-lang.org/tools/install) (latest stable release)
+[Rust](https://www.rust-lang.org/tools/install) (latest stable version)
 
 ## Steps to Build
 
@@ -46,19 +53,38 @@ cargo build --release
 
 The compiled executable will be available in the `/target/release/` directory.
 
-And run with this command:
+## Usage
 
+Run in default RAC mode:
 ```bash
-./target/release/gashishnik-server --bind-ip 0.0.0.0
+./target/release/gashishnik-server -a 0.0.0.0
 ```
 
-Or with TLS:
-
+Run with TLS:
 ```bash
-./target/release/gashishnik-server --bind-ip 0.0.0.0 --tls-cert server.crt --tls-key server.key
+./target/release/gashishnik-server -a 0.0.0.0 --tls-cert server.crt --tls-key server.key
 ```
 
-The compiled executable will be available in the `/target/release/` directory.
+Run in WRAC (WebSocket) mode:
+```bash
+./target/release/gashishnik-server -a 0.0.0.0 --mode wrac
+```
+
+Run WRAC with TLS:
+```bash
+./target/release/gashishnik-server -a 0.0.0.0 --mode wrac --tls-cert server.crt --tls-key server.key
+```
+
+Run in authentication-only mode (applies to both RAC and WRAC):
+```bash
+./target/release/gashishnik-server -a 0.0.0.0 --auth-only
+```
+
+**Mode summary:**
+
+- RAC – default TCP-based protocol (one request per connection).
+- WRAC – WebSocket-based protocol, allows persistent connections.
+- Auth-only – disables unauthenticated message sending in both modes.
 
 ## License
 

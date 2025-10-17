@@ -10,8 +10,7 @@ use tracing::info;
 use tracing_subscriber;
 
 use gashishnik_server::{
-    cli::{self, shutdown_signal},
-    protocols::rac::run_server,
+    cli::{self, shutdown_signal, Mode},
     server::{
         db::init_database,
         storage::SqliteStorage,
@@ -31,20 +30,34 @@ async fn main() -> Result<()> {
     spawn_shutdown_listener(&shutdown).await;
 
     info!(
-        "Starting server on {} (TLS: {}) {}",
+        "Starting server on {} (TLS: {}) {} [mode: {:?}]",
         args.bind_addr(),
         args.tls_enabled().then(|| "enabled").unwrap_or("disabled"),
-        args.auth_only.then(|| "in auth-only mode").unwrap_or("")
+        args.auth_only.then(|| "in auth-only mode").unwrap_or(""),
+        args.mode
     );
 
-    run_server(
-        &args.bind_addr(),
-        storage,
-        args.auth_only,
-        tls_acceptor,
-        shutdown,
-    )
-    .await?;
+    match args.mode {
+        Mode::RAC => {
+            gashishnik_server::protocols::rac::server::run_server(
+                &args.bind_addr(),
+                storage,
+                args.auth_only,
+                tls_acceptor,
+                shutdown,
+            ).await?;
+        }
+        Mode::WRAC => {
+            gashishnik_server::protocols::wrac::server::run_server(
+                &args.bind_addr(),
+                storage,
+                args.auth_only,
+                tls_acceptor,
+                shutdown,
+            ).await?;
+        }
+    }
+
     Ok(())
 }
 

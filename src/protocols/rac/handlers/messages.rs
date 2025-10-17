@@ -1,7 +1,7 @@
 use anyhow::Result;
 use crate::server::io_stream::AsyncStream;
 use crate::server::storage::Storage;
-use crate::protocols::common;
+use crate::protocols::rac::common;
 
 pub async fn handle_get_messages(socket: &mut (dyn AsyncStream), storage: &impl Storage) -> Result<()> {
     let messages = storage.get_messages().await?;

@@ -1,11 +1,15 @@
 use anyhow::Result;
-use crate::{protocols::common::sanitize::sanitize_message, server::io_stream::AsyncStream};
+use crate::protocols::common::sanitize::sanitize_message;
 use crate::server::storage::Storage;
 use tracing::{info, warn};
-use crate::protocols::rac::common;
+use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::WebSocketStream;
+use futures_util::SinkExt;
+use crate::server::io_stream::AsyncStream;
+type BoxedStream = Box<dyn AsyncStream + Send + Sync>;
 
 pub async fn handle_auth_message(
-    socket: &mut (dyn AsyncStream),
+    ws: &mut WebSocketStream<BoxedStream>,
     storage: &impl Storage,
     data: &[u8],
     client_ip: &str,
@@ -22,29 +26,27 @@ pub async fn handle_auth_message(
 
     if !storage.user_exists(username).await? {
         warn!("Auth failed: user {} not found", username);
-        common::write_response(socket, &[0x01]).await?;
+        ws.send(Message::Binary(vec![0x01].into())).await?;
         return Ok(());
     }
 
     if !storage.verify_user(username, password).await? {
         warn!("Auth failed: wrong password for user {}", username);
-        common::write_response(socket, &[0x02]).await?;
+        ws.send(Message::Binary(vec![0x02].into())).await?;
         return Ok(());
     }
 
     let message_clean = sanitize_message(message_raw);
 
-    info!("User {} authenticated successfully, saving message", username);
-    storage
-        .save_message(Some(username), Some(client_ip), &message_clean)
-        .await?;
-    common::write_response(socket, &[0x00]).await?;
+    info!("User {} authenticated successfully, saving message", message_clean);
+    storage.save_message(Some(username), Some(client_ip), &message_clean).await?;
+    ws.send(Message::Binary(vec![0x00].into())).await?;
 
     Ok(())
 }
 
 pub async fn handle_registration(
-    socket: &mut (dyn AsyncStream),
+    ws: &mut WebSocketStream<BoxedStream>,
     storage: &impl Storage,
     data: &[u8]
 ) -> Result<()> {
@@ -60,13 +62,13 @@ pub async fn handle_registration(
 
     if storage.user_exists(username).await? {
         warn!("Registration failed: user {} already exists", username);
-        common::write_response(socket, &[0x01]).await?;
+        ws.send(Message::Binary(vec![0x01].into())).await?;
         return Ok(());
     }
 
     storage.create_user(username, password).await?;
     info!("User {} registered successfully", username);
-    common::write_response(socket, &[0x00]).await?;
+    ws.send(Message::Binary(vec![0x00].into())).await?;
 
     Ok(())
 }

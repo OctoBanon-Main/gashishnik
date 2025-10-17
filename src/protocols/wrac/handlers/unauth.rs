@@ -1,12 +1,15 @@
 use anyhow::Result;
-use crate::server::io_stream::AsyncStream;
+use crate::protocols::common::sanitize::sanitize_message;
 use crate::server::storage::Storage;
 use tracing::info;
-use crate::protocols::rac::common;
-use crate::protocols::common::sanitize::sanitize_message;
+use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::WebSocketStream;
+use futures_util::SinkExt;
+use crate::server::io_stream::AsyncStream;
+type BoxedStream = Box<dyn AsyncStream + Send + Sync>;
 
 pub async fn handle_unauth_message(
-    socket: &mut (dyn AsyncStream),
+    ws: &mut WebSocketStream<BoxedStream>,
     storage: &impl Storage,
     data: &[u8],
     client_ip: &str,
@@ -17,7 +20,7 @@ pub async fn handle_unauth_message(
     info!("Saving unauthenticated message from {}: {}", client_ip, msg_clean);
 
     storage.save_message(None, Some(client_ip), &msg_clean).await?;
-    common::write_response(socket, &[0x00]).await?;
+    ws.send(Message::Binary(vec![0x00].into())).await?;
 
     Ok(())
 }

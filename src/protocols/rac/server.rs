@@ -1,13 +1,13 @@
 use anyhow::Result;
 use tokio::net::TcpListener;
-use crate::server::storage::Storage;
+use crate::{protocols::common::info::build_protocol_info_packet, server::storage::Storage};
 use tracing::{info, warn};
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 
 use super::handlers;
 use crate::protocols::commands::Command;
-use crate::protocols::common;
+use super::common;
 
 use std::boxed::Box;
 use tokio_rustls::TlsAcceptor;
@@ -94,6 +94,10 @@ async fn handle_client(
         }
         Ok(Command::Register) => {
             handlers::handle_registration(&mut socket, &*storage, &data[1..]).await?;
+        }
+        Ok(Command::Info) => {
+            let packet = build_protocol_info_packet(0x03); // RAC/WRAC v2.0
+            common::write_response(&mut socket, &packet).await?;
         }
         Err(_) => warn!("Unknown command from {}: 0x{:02x}", client_ip, data[0]),
     }

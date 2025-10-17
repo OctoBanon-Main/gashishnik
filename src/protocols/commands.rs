@@ -6,6 +6,7 @@ pub enum Command {
     SendUnauthenticated = 0x01,
     SendAuthenticated = 0x02,
     Register = 0x03,
+    Info = 0x69,
 }
 
 impl TryFrom<u8> for Command {
@@ -17,6 +18,7 @@ impl TryFrom<u8> for Command {
             0x01 => Ok(Self::SendUnauthenticated),
             0x02 => Ok(Self::SendAuthenticated),
             0x03 => Ok(Self::Register),
+            0x69 => Ok(Self::Info),
             _ => Err(()),
         }
     }
