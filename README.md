@@ -6,6 +6,8 @@
 
 Gashishnik is a server implementation of the Real Address Chat (RAC) protocol, developed by Mr. Sugoma and promoted as the "IRC Killer," designed to manage text-based communication between clients.
 
+> More information about RAC (and related projects such as WRAC) can be found on [MeexReay’s Racinfo](https://racinfo.meex.lol)
+
 ## Features
 - TLS support (encrypts client-server communication; requires client TLS support)
 - Server-side message sanitization (removes ANSI control characters and other unwanted input from clients)
