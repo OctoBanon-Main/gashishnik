@@ -2,9 +2,9 @@
 [<img src="https://github.com/user-attachments/assets/f2be5caa-6246-4a6a-9bee-2b53086f9afb" height="30">]()
 [<img src="https://github.com/user-attachments/assets/4d35191d-1dbc-4391-a761-6ae7f76ba7af" height="30">]()
 
-**Gashishnik — High-performance RAC protocol server implementation in Rust**
+**Gashishnik - High-performance RAC protocol server implementation in Rust**
 
-Gashishnik is a server implementation of the Real Address Chat (RAC) protocol, developed by Mr. Sugoma and promoted as the "IRC Killer," designed to manage text-based communication between clients.
+Gashishnik is a high-performance server implementation of the Real Address Chat (RAC) protocol - originally created by Mr. Sugoma and marketed as the “IRC Killer” - designed to handle text-based communication between clients.
 
 > More information about RAC (and related projects such as WRAC) can be found on [MeexReay’s Racinfo](https://racinfo.meex.lol)
 
@@ -14,7 +14,7 @@ Gashishnik is a server implementation of the Real Address Chat (RAC) protocol, d
 - Password hashing via bcrypt
 - SQLite storage with configurable database file
 - Authentication-only mode
-- RAC and WRACv2.0 protocol support
+- WRAC v2.0 protocol support (WebSocket-based variant)
 
 ## Default ports
 
@@ -27,7 +27,7 @@ Gashishnik is a server implementation of the Real Address Chat (RAC) protocol, d
 
 Before building the project, ensure you have the following installed:
 
-[Rust](https://www.rust-lang.org/tools/install) (latest stable version)
+- [Rust](https://www.rust-lang.org/tools/install) (latest stable version)
 
 ## Steps to Build
 
@@ -84,9 +84,9 @@ Run in authentication-only mode (applies to both RAC and WRAC):
 
 **Mode summary:**
 
-- RAC – default TCP-based protocol (one request per connection).
-- WRAC – WebSocket-based protocol, allows persistent connections.
-- Auth-only – disables unauthenticated message sending in both modes.
+- **RAC** – default TCP-based protocol (one request per connection).
+- **WRAC** – WebSocket-based protocol, allows persistent connections.
+- **Auth-only** – disables unauthenticated message sending in both modes.
 
 ## Generating self-signed TLS certificates
 
@@ -111,12 +111,6 @@ openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes ^
 ```
 
 > 📝 On Linux/macOS, replace ^ with \ for line continuation.
-
-**This creates:**
-
-- **server.crt** — certificate file
-
-- **server.key** — private key file
 
 **Example run with TLS**
 ```bash
