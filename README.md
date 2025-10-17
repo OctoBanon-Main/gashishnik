@@ -86,6 +86,44 @@ Run in authentication-only mode (applies to both RAC and WRAC):
 - WRAC – WebSocket-based protocol, allows persistent connections.
 - Auth-only – disables unauthenticated message sending in both modes.
 
+## Generating self-signed TLS certificates
+
+**Requirements**
+- **OpenSSL** must be installed and available in your PATH.  
+  - **Debian/Ubuntu:** `sudo apt install openssl`  
+  - **Arch Linux:** `sudo pacman -S openssl`  
+  - **macOS:** `brew install openssl`  
+  - **Windows:**  
+    - Install [Git for Windows](https://gitforwindows.org/) — it includes `openssl.exe`,  
+      or  
+    - Use [OpenSSL for Windows binaries](https://slproweb.com/products/Win32OpenSSL.html)
+
+**Generate certificate and key**
+
+Run this command in your terminal or PowerShell:
+
+```bash
+openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes ^
+  -keyout server.key -out server.crt ^
+  -subj "/CN=localhost"
+```
+
+> 📝 On Linux/macOS, replace ^ with \ for line continuation.
+
+**This creates:**
+
+- **server.crt** — certificate file
+
+- **server.key** — private key file
+
+**Example run with TLS**
+```bash
+./target/release/gashishnik-server -a 0.0.0.0 \
+  --tls-cert server.crt --tls-key server.key
+```
+
+> TLS works in both RAC and WRAC modes.
+
 ## License
 
 This project is licensed under the [MIT License](https://github.com/OctoBanon-Main/gashishnik/blob/main/LICENSE).
